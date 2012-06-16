@@ -1,0 +1,4 @@
+name = Yandex Map
+description = Implements Yandex Map functional
+core = 7.x
+package = Yandex

@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file 
+ */
+define('YMAPS_MODULE_PATH', drupal_get_path('module', 'ymaps'));
+
+module_load_include('inc', 'ymaps', 'includes/ymaps');
+
+/**
+ * Implementation of hook_init().
+ */
+function ymaps_init() {
+  // Nothing to do
+}
+
+/**
+ * Implementation of hook_perm().
+ *
+ * @return array An array of valid permissions for the mymodule module
+ */
+function ymaps_permission() {
+  return array(
+      'access ymaps list',
+      'administer ymaps'
+  );
+}
+
+/**
+ * Implementation of hook_theme().
+ * 
+ * @return Array of defined theme functions
+ */
+function ymaps_theme($existing, $type, $theme, $path) {
+  $base = array(
+      'path' => YMAPS_MODULE_PATH . '/theme',
+      'file' => 'ymaps.theme.inc'
+  );
+  return array(
+      'ymaps_list' => array(
+          'arguments' => array('content' => NULL),
+          'template' => 'ymaps-list',
+      ) + $base,
+      'ymap_container' => array(
+          'arguments' => array(),
+          'template' => 'ymap-container'
+      ) + $base
+  );
+}
+
+/**
+ * Implementation of hook_menu().
+ *
+ * @return An array of menu items.
+ */
+function ymaps_menu() {
+  $items = array();
+
+  $items['admin/config/ymaps'] = array(
+      'title' => 'YMaps',
+      'description' => 'YMaps module configuration',
+      'page callback' => 'ymaps_list',
+      'access arguments' => array('access ymaps list'),
+      'file' => 'includes/ymaps.admin.inc',
+      'weight' => -10
+  );
+  $items['admin/config/ymaps/overview'] = array(
+      'title' => 'List',
+      'weight' => -9,
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/config/ymaps/add'] = array(
+      'title' => 'Add map',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('ymaps_addmap_form'),
+      'access arguments' => array('administer ymaps'),
+      'file' => 'includes/ymaps.admin.inc',
+      'type' => MENU_LOCAL_TASK,
+      'weight' => -8
+  );
+
+  return $items;
+}
